@@ -1,2 +1,4 @@
 /data/images
 sample_submission.csv
+notebooks/model*
+mlbookcamp.yml
