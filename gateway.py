@@ -54,7 +54,7 @@ def prepare_response(pb_response):
 def predict(url):
     X = preprocessor.from_url(url)
     pb_request = prepare_request(X)
-    pb_response = stub.Predict(pb_request, timeout=20.0)
+    pb_response = stub.Predict(pb_request, timeout=50.0)
     response = prepare_response(pb_response)
     return response
 
@@ -71,7 +71,7 @@ def predict_endpoint():
 
 
 if __name__ == '__main__':
-    url = 'https://m.media-amazon.com/images/W/WEBP_402378-T1/images/I/31OEvRveV3L.jpg'
-    response = predict(url)
-    print(response)
-    #app.run(debug=True, host='0.0.0.0', port=9696)
+    #url = 'https://m.media-amazon.com/images/W/WEBP_402378-T1/images/I/31OEvRveV3L.jpg'
+    #response = predict(url)
+    #print(response)
+    app.run(debug=True, host='0.0.0.0', port=9696)

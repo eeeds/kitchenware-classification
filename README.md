@@ -1,3 +1,5 @@
+# Kitchenware-Classification
+
 # Enviroment
 I'll use a conda enviroment for this project.
 ## Create a conda enviroment
@@ -16,8 +18,9 @@ conda install ipykernel
 ```bash
 pip install -r requirements.txt
 ```
-# [tf-serving-connect.ipynb](notebooks/tf-serving-connect.ipynb)
-Testing model using this notebook.
+# tf-serving-connect
+Working on [tf-serving-connect.ipynb](notebooks/tf-serving-connect.ipynb).
+
 
 I'll try with an amazon picture. It looks like it's working because it was predicting well.
 ## Testing as a docker-container
@@ -35,10 +38,16 @@ I'll try with an amazon picture. It looks like it's working because it was predi
 Working on [proto.py](proto.py) because we're going use some functions from there.
 
 The gateway will be serve on a Flask application. [Code](gateway.py)
-## Run the gateway
+## Run the gateway (using an example)
+```sh
+python gateway.py 
+```
+## Run the gateway (using [test.py](test.py))
 ```sh
 python gateway.py
 ```
+
+
 ![code2](images/gateway-testing.PNG)
 It's working as intended.
 
