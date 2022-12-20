@@ -16,3 +16,12 @@ conda install ipykernel
 ```bash
 pip install -r requirements.txt
 ```
+
+# Gateway
+The gateway will be serve on a FastAPI application. [Code](gateway.py)
+## Run the gateway
+```sh
+uvicorn gateway:app --reload
+```
+# Proto
+Working on [proto.py](proto.py)

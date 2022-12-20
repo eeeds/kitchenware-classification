@@ -1,0 +1,14 @@
+signature_def['serving_default']:
+  The given SavedModel SignatureDef contains the following input(s):
+    inputs['input_24'] tensor_info:
+        dtype: DT_FLOAT
+        shape: (-1, 150, 150, 3)
+        name: serving_default_input_24:0
+  The given SavedModel SignatureDef contains the following output(s):
+    outputs['dense_20'] tensor_info:
+        dtype: DT_FLOAT
+        shape: (-1, 6)
+        name: StatefulPartitionedCall:0
+  Method name is: tensorflow/serving/predict
+2022-12-20 08:27:42.850934: I tensorflow/core/platform/cpu_feature_guard.cc:193] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  AVX AVX2
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.

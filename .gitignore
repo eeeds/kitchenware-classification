@@ -2,3 +2,5 @@
 sample_submission.csv
 notebooks/model*
 mlbookcamp.yml
+__pycache__
+kitchen-model
