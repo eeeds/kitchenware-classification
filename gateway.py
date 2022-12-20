@@ -11,7 +11,7 @@ from tensorflow_serving.apis import prediction_service_pb2_grpc
 
 from keras_image_helper import create_preprocessor
 
-from fastapi import FastAPI
+from flask import Flask
 from flask import request
 from flask import jsonify
 
@@ -59,11 +59,11 @@ def predict(url):
     return response
 
 
-app = FastAPI()
+app = Flask("gateway")
 
 
-@app.post('/predict')
-async def predict_endpoint():
+@app.route('/predict', methods=['POST'])
+def predict_endpoint():
     data = request.get_json()
     url = data['url']
     result = predict(url)
