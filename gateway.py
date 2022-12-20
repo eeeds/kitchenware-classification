@@ -24,7 +24,7 @@ host = os.getenv('TF_SERVING_HOST', 'localhost:8500')
 channel = grpc.insecure_channel(host)
 stub = prediction_service_pb2_grpc.PredictionServiceStub(channel)
 
-preprocessor = create_preprocessor('kitchen', target_size=(150, 150))
+preprocessor = create_preprocessor('xception', target_size=(150, 150))
 
 
 def prepare_request(X):
@@ -71,7 +71,7 @@ def predict_endpoint():
 
 
 if __name__ == '__main__':
-    url = 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pexels.com%2Fsearch%2Fglass%2F&psig=AOvVaw2EzbzSQ3JEbnZDmp3UBJga&ust=1671624511561000&source=images&cd=vfe&ved=0CA8QjRxqFwoTCKCmh9uUiPwCFQAAAAAdAAAAABAE'
+    url = 'https://m.media-amazon.com/images/W/WEBP_402378-T1/images/I/31OEvRveV3L.jpg'
     response = predict(url)
     print(response)
     #app.run(debug=True, host='0.0.0.0', port=9696)
