@@ -31,6 +31,11 @@
     - [Test it](#test-it-1)
   - [Model Service](#model-service)
     - [Apply it](#apply-it)
+    - [Make sure that was created using the following command](#make-sure-that-was-created-using-the-following-command)
+    - [Test it](#test-it-2)
+  - [Gateway deployment](#gateway-deployment)
+    - [Making image visible to kind](#making-image-visible-to-kind)
+    - [Apply it](#apply-it-1)
 
 # Kitchenware-Classification
 [DataTalks.Club](https://datatalks.club/) has organized an image classification competition.
@@ -206,4 +211,26 @@ Working on [model-service.yaml](kube-config/model-service.yaml)
 ### Apply it
 ```sh
 kubectl apply -f kube-config/model-service.yaml
+```
+### Make sure that was created using the following command
+```sh
+kubectl get services
+```
+### Test it
+```sh
+kubectl port-forward service/tf-serving-kitchen-model 8500:8500
+```
+Use [gateway.py](gateway.py) for testing.
+
+![test](images/model-service-test.PNG)
+
+## Gateway deployment
+Working on [gateway-deployment.yaml](kube-config/gateway-deployment.yaml)
+### Making image visible to kind
+```sh
+kind load docker-image kitchen-gateway:001
+```
+### Apply it
+```sh
+kubectl apply -f kube-config/gateway-deployment.yaml
 ```
