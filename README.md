@@ -28,6 +28,9 @@
     - [Make image visible to kind](#make-image-visible-to-kind)
     - [Deploy model](#deploy-model)
     - [Make sure that is running](#make-sure-that-is-running)
+    - [Test it](#test-it-1)
+  - [Model Service](#model-service)
+    - [Apply it](#apply-it)
 
 # Kitchenware-Classification
 [DataTalks.Club](https://datatalks.club/) has organized an image classification competition.
@@ -190,3 +193,17 @@ kubectl apply -f kube-config/model-deployment.yaml
 kubectl get pods
 ```
 Its status has to be `RUNNING`
+### Test it
+```sh
+kubectl port-forward tf-serving-kitchen-model-796688984b-kcn9f 8500:8500
+```
+Use [gateway.py](gateway.py) for testing.
+
+![test](images/testing-deployment-k8s.PNG)
+
+## Model Service
+Working on [model-service.yaml](kube-config/model-service.yaml)
+### Apply it
+```sh
+kubectl apply -f kube-config/model-service.yaml
+```

@@ -71,7 +71,7 @@ def predict_endpoint():
 
 
 if __name__ == '__main__':
-    #url = 'https://m.media-amazon.com/images/W/WEBP_402378-T1/images/I/31OEvRveV3L.jpg'
-    #response = predict(url)
-    #print(response)
-    app.run(debug=True, host='0.0.0.0', port=9696)
+    url = 'https://m.media-amazon.com/images/W/WEBP_402378-T1/images/I/31OEvRveV3L.jpg'
+    response = predict(url)
+    print(response)
+    #app.run(debug=True, host='0.0.0.0', port=9696)
