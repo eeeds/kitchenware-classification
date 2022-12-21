@@ -1,5 +1,47 @@
-# Kitchenware-Classification
+- [Kitchenware-Classification](#kitchenware-classification)
+- [Enviroment](#enviroment)
+  - [Create a conda enviroment](#create-a-conda-enviroment)
+  - [Activate the enviroment](#activate-the-enviroment)
+  - [Install ipykernel](#install-ipykernel)
+  - [Install dependencies](#install-dependencies)
+- [tf-serving-connect](#tf-serving-connect)
+  - [Testing as a docker-container](#testing-as-a-docker-container)
+- [Gateway](#gateway)
+  - [Proto](#proto)
+  - [Run the gateway (using an example)](#run-the-gateway-using-an-example)
+  - [Run the gateway (using test.py)](#run-the-gateway-using-testpy)
+- [Docker-compose](#docker-compose)
+  - [Gateway Dockerfile](#gateway-dockerfile)
+  - [Build Dockerfile](#build-dockerfile)
+  - [Test it](#test-it)
+  - [Model Dockerfile](#model-dockerfile)
+  - [Build Dockerfile](#build-dockerfile-1)
+  - [Docker-Compose code](#docker-compose-code)
+  - [Build Docker-Compose](#build-docker-compose)
+- [Kubernetes](#kubernetes)
+  - [What's kubernetes?](#whats-kubernetes)
+  - [Kind](#kind)
+  - [kubectl](#kubectl)
+    - [Install kubectl](#install-kubectl)
+    - [Create a kind cluster](#create-a-kind-cluster)
+  - [Deploying our model to K8s](#deploying-our-model-to-k8s)
+    - [Make image visible to kind](#make-image-visible-to-kind)
+    - [Deploy model](#deploy-model)
+    - [Make sure that is running](#make-sure-that-is-running)
 
+# Kitchenware-Classification
+[DataTalks.Club](https://datatalks.club/) has organized an image classification competition.
+
+In this competition you need to classify images of different kitchenware items into 6 classes:
+
+- cups
+- glasses
+- plates
+- spoons
+- forks
+- knives
+
+The dataset is available [here](https://www.kaggle.com/competitions/kitchenware-classification/).
 # Enviroment
 I'll use a conda enviroment for this project.
 ## Create a conda enviroment
@@ -22,7 +64,7 @@ pip install -r requirements.txt
 Working on [tf-serving-connect.ipynb](notebooks/tf-serving-connect.ipynb).
 
 
-I'll try with an amazon picture. It looks like it's working because it was predicting well.
+I'll try with an amazon picture. It looks like it's working because it is predicting well.
 ## Testing as a docker-container
 ```sh
     docker run -it --rm `
@@ -113,3 +155,38 @@ docker-compose up
 ![test](images/docker-compose-testing.PNG)
 
 
+# Kubernetes
+## What's kubernetes?
+Kubernetes, also known as K8s, is an open-source system for automating deployment, scaling, and management of containerized applications.
+## Kind
+kind is a tool for running local Kubernetes clusters using Docker container “nodes”.
+kind was primarily designed for testing Kubernetes itself, but may be used for local development or CI.
+
+If you have already installed docker, you should have kind.
+## kubectl
+The Kubernetes command-line tool, kubectl, allows you to run commands against Kubernetes clusters. You can use kubectl to deploy applications, inspect and manage cluster resources, and view logs. For more information including a complete list of kubectl operations, see the kubectl reference documentation.
+### Install kubectl
+Follow this [link](https://kubernetes.io/docs/tasks/tools/) in order to install kubectl.
+### Create a kind cluster
+```sh
+kind create cluster
+```
+## Deploying our model to K8s
+Working on folder [kube-config](kube-config/). 
+
+For the deployment part, I'll use [image-model.Dockerfile](image-model.Dockerfile), its name is kitchen-model:001.
+### Make image visible to kind
+```sh
+kind load docker-image kitchen-model:001
+```
+![kind-model](images/kind-model.PNG)
+### Deploy model
+```sh
+kubectl apply -f kube-config/model-deployment.yaml
+```
+![model-deployment](images/model-deployment.PNG)
+### Make sure that is running
+```sh
+kubectl get pods
+```
+Its status has to be `RUNNING`

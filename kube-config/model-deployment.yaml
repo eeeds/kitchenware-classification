@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tf-serving-kitchen-model
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tf-serving-kitchen-model
+  template:
+    metadata:
+      labels:
+        app: tf-serving-kitchen-model
+    spec:
+      containers:
+      - name: tf-serving-kitchen-model
+        image: kitchen-model:001
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "1"
+        ports:
+        - containerPort: 8500
