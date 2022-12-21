@@ -110,6 +110,6 @@ services:
 ```
 docker-compose up
 ```
-
+![test](images/docker-compose-testing.PNG)
 
 

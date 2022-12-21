@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  kitchen-model:
+    image: kitchen-model:001
+  gateway:
+    image: kitchen-gateway:001 
+    environment:
+      - TF_SERVING_HOST=kitchen-model:8500
+    ports:
+      - "9696:9696"
