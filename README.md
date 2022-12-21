@@ -36,6 +36,11 @@
   - [Gateway deployment](#gateway-deployment)
     - [Making image visible to kind](#making-image-visible-to-kind)
     - [Apply it](#apply-it-1)
+    - [Test it](#test-it-3)
+  - [Gateway Service](#gateway-service)
+    - [Apply it](#apply-it-2)
+    - [Test it](#test-it-4)
+  - [Deploy it to EKS](#deploy-it-to-eks)
 
 # Kitchenware-Classification
 [DataTalks.Club](https://datatalks.club/) has organized an image classification competition.
@@ -234,3 +239,27 @@ kind load docker-image kitchen-gateway:001
 ```sh
 kubectl apply -f kube-config/gateway-deployment.yaml
 ```
+### Test it
+```sh
+kubectl port-forward gateway-784f5cb9b6-sh8qb 9696:9696
+```
+Use [test.py](test.py) for testing.
+
+![testing](images/gateway-testing.PNG)
+
+## Gateway Service
+Working on [gateway-service.yaml](kube-config/gateway-service.yaml)
+### Apply it
+```sh
+kubectl apply -f kube-config/gateway-service.yaml
+```
+Make sure that is working well using `kubectl get services`
+
+### Test it
+```sh
+kubectl port-forward service/gateway 8080:80
+```
+Use [test.py](test.py) for testing, but you have to change url.
+Now should be `'http://localhost:8080/predict'`
+
+## Deploy it to EKS
