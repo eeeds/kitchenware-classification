@@ -53,8 +53,8 @@
   - [Get services in order to see if it working or not.](#get-services-in-order-to-see-if-it-working-or-not)
   - [Test it](#test-it-5)
   - [Change URL to test.py and test](#change-url-to-testpy-and-test)
-  - [Delete cluster from cli](#delete-cluster-from-cli)
-  - [Delete ECR images from cli](#delete-ecr-images-from-cli)
+  - [Delete cluster using cli](#delete-cluster-using-cli)
+  - [Delete ECR images using cli](#delete-ecr-images-using-cli)
 
 # Kitchenware-Classification
 [DataTalks.Club](https://datatalks.club/) has organized an image classification competition.
@@ -378,11 +378,11 @@ Use [test.py](test.py) for testing, but you have to change url.
 
 Don't forget to delete all the services from AWS because they cost money.
 
-## Delete cluster from cli
+## Delete cluster using cli
 ```
 eksctl delete cluster --name kitchen-model-eks
 ```
-## Delete ECR images from cli
+## Delete ECR images using cli
 ```
 aws ecr batch-delete-image --repository-name kitchen-images --image-ids imageTag=kitchen-gateway-001
 aws ecr batch-delete-image --repository-name kitchen-images --image-ids imageTag=kitchen-model-001
