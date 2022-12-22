@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: gateway
-        image: kitchen-gateway:001
+        image: 546464646.dkr.ecr.us-east-1.amazonaws.com/kitchen-images:kitchen-gateway-001
         resources:
           limits:
             memory: "128Mi"

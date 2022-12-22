@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: tf-serving-kitchen-model
-        image: kitchen-model:001
+        image: 546464646.dkr.ecr.us-east-1.amazonaws.com/kitchen-images:kitchen-model-001
         resources:
           limits:
             memory: "512Mi"

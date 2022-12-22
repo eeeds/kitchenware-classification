@@ -1,4 +1,5 @@
 - [Kitchenware-Classification](#kitchenware-classification)
+- [Tools](#tools)
 - [Enviroment](#enviroment)
   - [Create a conda enviroment](#create-a-conda-enviroment)
   - [Activate the enviroment](#activate-the-enviroment)
@@ -40,7 +41,20 @@
   - [Gateway Service](#gateway-service)
     - [Apply it](#apply-it-2)
     - [Test it](#test-it-4)
-  - [Deploy it to EKS](#deploy-it-to-eks)
+- [Deploy it to EKS](#deploy-it-to-eks)
+  - [Download EKSCTL](#download-eksctl)
+  - [Create a cluster](#create-a-cluster)
+  - [Public local images to ECR](#public-local-images-to-ecr)
+    - [Create a repository](#create-a-repository)
+  - [Push images to ECR](#push-images-to-ecr)
+  - [Deploying our model to EKS](#deploying-our-model-to-eks)
+  - [Apply deployments](#apply-deployments)
+  - [Apply services](#apply-services)
+  - [Get services in order to see if it working or not.](#get-services-in-order-to-see-if-it-working-or-not)
+  - [Test it](#test-it-5)
+  - [Change URL to test.py and test](#change-url-to-testpy-and-test)
+  - [Delete cluster from cli](#delete-cluster-from-cli)
+  - [Delete ECR images from cli](#delete-ecr-images-from-cli)
 
 # Kitchenware-Classification
 [DataTalks.Club](https://datatalks.club/) has organized an image classification competition.
@@ -55,6 +69,15 @@ In this competition you need to classify images of different kitchenware items i
 - knives
 
 The dataset is available [here](https://www.kaggle.com/competitions/kitchenware-classification/).
+# Tools
+- [Docker and Docker Compose](https://www.docker.com/)
+- [Python](https://www.python.com)
+- Pandas, Numpy, Matplotlib
+- Tensorflow, Keras
+- Flask
+- Kubernetes/Kind/Kubectl
+- [AWS EKS](https://docs.aws.amazon.com/eks/latest/userguide/getting-started-eksctl.html)
+
 # Enviroment
 I'll use a conda enviroment for this project.
 ## Create a conda enviroment
@@ -92,7 +115,7 @@ I'll try with an amazon picture. It looks like it's working because it is predic
 ## Proto
 Working on [proto.py](proto.py) because we're going use some functions from there.
 
-The gateway will be serve on a Flask application. [Code](gateway.py)
+The gateway will be serve on a [Flask application](gateway.py)
 ## Run the gateway (using an example)
 ```sh
 python gateway.py 
@@ -262,4 +285,105 @@ kubectl port-forward service/gateway 8080:80
 Use [test.py](test.py) for testing, but you have to change url.
 Now should be `'http://localhost:8080/predict'`
 
-## Deploy it to EKS
+# Deploy it to EKS
+## Download [EKSCTL](https://docs.aws.amazon.com/eks/latest/userguide/eksctl.html)
+## Create a cluster
+Working on [eks-config](kube-config/eks-config.yaml)
+```sh
+eksctl create cluster -f kube-config/eks-config.yaml
+```
+Make sure that you have connected to AWS CLI before. Follow this [link](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html) for more details.
+## Public local images to ECR
+We have to publish `kitchen-gateway:001` and `kitchen-model:001`  in ECR
+
+### Create a repository
+```
+aws ecr create-repository --repository-name kitchen-images
+```
+Obtain repositoryUri and get these data:
+
+```sh
+ACCOUNT_ID=546464646 
+REGION=us-east-1 
+REGISTRY_NAME=kitchen-images 
+PREFIX=${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/${REGISTRY_NAME} 
+```
+Publish Gateway to ECR:
+
+```sh
+GATEWAY_LOCAL=kitchen-gateway:001 
+GATEWAY_REMOTE=${PREFIX}:kitchen-gateway-001 
+docker tag ${GATEWAY_LOCAL} ${GATEWAY_REMOTE}
+```
+
+Model:
+
+```sh
+MODEL_LOCAL=kitchen-model:001
+MODEL_REMOTE=${PREFIX}:kitchen-model-001
+docker tag ${MODEL_LOCAL} ${MODEL_REMOTE}
+```
+
+## Push images to ECR
+First login to ECR
+```sh
+aws ecr get-login --no-include-email
+```
+Copy the output and paste it in your terminal.
+```
+$(aws ecr get-login --no-include-email) 
+```
+is a better option.
+
+Push the images
+```sh
+docker push ${GATEWAY_REMOTE}
+docker push ${MODEL_REMOTE}
+```
+## Deploying our model to EKS
+Replace images names in [gateway-deployment.yaml](kube-config/gateway-deployment.yaml) and [model-deployment.yaml](kube-config/model-deployment.yaml)
+with the uris of our ECR images.
+
+Wait until the cluster has been created and then make sure that is working using `kubectl get nodes`. It has to show something like `ip-192-167-68-81.ec2.internal   Ready    <none>   57m   v1.23.13-eks-dff213`.
+
+## Apply deployments
+```sh
+kubectl apply -f kube-config/model-deployment.yaml
+kubectl apply -f kube-config/gateway-deployment.yaml
+```
+## Apply services
+```sh
+kubectl apply -f kube-config/model-service.yaml
+kubectl apply -f kube-config/gateway-service.yaml
+```
+## Get services in order to see if it working or not.
+```sh
+kubectl get services
+```
+![service-running](images/k8s-services.PNG)
+## Test it
+```sh
+kubectl port-forward service/tf-serving-kitchen-model 8500:8500
+```
+Use [gateway.py](gateway.py) for testing.
+
+![test](images/k8s-eks-testing.PNG)
+
+## Change URL to [test.py](test.py) and test 
+
+```sh
+kubectl port-forward service/gateway 8080:80
+```
+Use [test.py](test.py) for testing, but you have to change url.
+
+Don't forget to delete all the services from AWS because they cost money.
+
+## Delete cluster from cli
+```
+eksctl delete cluster --name kitchen-model-eks
+```
+## Delete ECR images from cli
+```
+aws ecr batch-delete-image --repository-name kitchen-images --image-ids imageTag=kitchen-gateway-001
+aws ecr batch-delete-image --repository-name kitchen-images --image-ids imageTag=kitchen-model-001
+```
